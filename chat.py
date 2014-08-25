@@ -12,9 +12,11 @@ def start_chat(argv):
 
 
 def send(port):
-    port = str(port)
     context = zmq.Context()
     socket = context.socket(zmq.PUB)
+
+    ip = socket.getbyhostname(socket.gethostname)
+    address = ip + ':' + port
 
     socket.bind("tcp://*:%s" % port)
 
@@ -35,7 +37,7 @@ def send(port):
             elif args[0] == '/help':
                 pass
         else:
-            socket.send('%s %s' % (port, send_msg))
+            socket.send('%s %s' % (address, send_msg))
 
 
 def connect(processes, port):
