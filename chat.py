@@ -3,6 +3,7 @@ __author__ = 'mats'
 
 import zmq
 import sys
+from socket import gethostbyname, gethostname
 from multiprocessing import Process
 
 
@@ -15,7 +16,7 @@ def send(port):
     context = zmq.Context()
     socket = context.socket(zmq.PUB)
 
-    ip = socket.getbyhostname(socket.gethostname)
+    ip = gethostbyname(gethostname())
     address = ip + ':' + port
 
     socket.bind("tcp://*:%s" % port)
@@ -68,7 +69,7 @@ def receive(address):
 
     while True:
         msg = socket.recv()
-        print 'Incoming: ' + msg
+        print msg
 
 
 if __name__ == '__main__':
