@@ -35,6 +35,7 @@ def send(port):
             elif args[0] == '/disconnect':
                 disconnect_port = args[1]
                 receive_processes[disconnect_port].terminate()
+                print('disconnected')
             elif args[0] == '/help':
                 pass
         else:
