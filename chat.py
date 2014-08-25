@@ -27,11 +27,11 @@ def send(port):
             args = send_msg.split(' ')
 
             if args[0] == '/connect':
-                receive_port = args[1]
-                connect(receive_processes, receive_port)
+                receive_address = args[1]
+                connect(receive_processes, receive_address)
             elif args[0] == '/disconnect':
-                disconnect_port = args[1]
-                disconnect(receive_processes, disconnect_port)
+                disconnect_address = args[1]
+                disconnect(receive_processes, disconnect_address)
             elif args[0] == '/help':
                 pass
         else:
@@ -48,22 +48,21 @@ def connect(processes, port):
         print 'already connected'
 
 
-def disconnect(processes, port):
-    if port in processes:
-        processes[port].terminate()
-        del processes[port]
+def disconnect(processes, address):
+    if address in processes:
+        processes[address].terminate()
+        del processes[address]
         print 'disconnected'
     else:
         print 'not connected'
 
 
-def receive(port):
-    port = str(port)
+def receive(address):
     context = zmq.Context()
     socket = context.socket(zmq.SUB)
 
-    socket.connect("tcp://localhost:%s" % port)
-    socket.setsockopt(zmq.SUBSCRIBE, port)
+    socket.connect("tcp://%s" % address)
+    socket.setsockopt(zmq.SUBSCRIBE, address)
 
     while True:
         msg = socket.recv()
