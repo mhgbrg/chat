@@ -41,12 +41,12 @@ def send(port):
             socket.send('%s %s' % (address, send_msg))
 
 
-def connect(processes, port):
-    if port not in processes:
-        process = Process(target=receive, args=(port,))
+def connect(processes, address):
+    if address not in processes:
+        process = Process(target=receive, args=(address,))
         process.daemon = True
         process.start()
-        processes[port] = process
+        processes[address] = process
     else:
         print 'already connected'
 
