@@ -29,16 +29,43 @@ def send(port):
         if send_msg[0] == '/':
             args = send_msg.split(' ')
 
-            if args[0] == '/connect':
-                receive_address = args[1]
-                connect(receive_processes, receive_address)
-            elif args[0] == '/disconnect':
-                disconnect_address = args[1]
-                disconnect(receive_processes, disconnect_address)
-            elif args[0] == '/help':
-                pass
+            if args[0] == '/exit':
+                break
+            elif len(args) == 1:
+                display_help(args[0][1:])
+            else:
+                arg1 = args[1]
+                if args[0] == '/connect':
+                    connect(receive_processes, arg1)
+                elif args[0] == '/disconnect':
+                    disconnect(receive_processes, arg1)
+                elif args[0] == '/help':
+                    display_help(arg1)
         else:
             socket.send('%s %s' % (address, send_msg))
+
+
+def display_help(command):
+    if command == 'connect':
+        print '/connect - connect to another user\n'
+
+        print 'Usage:'
+        print '/connect <ip:port>'
+        print 'Example: /connect 192.168.1.2:8888'
+    elif command == 'disconnect':
+        print '/disconnect - disconnect from a connected user\n'
+
+        print 'Usage:'
+        print '/disconnect <ip:port>'
+        print 'Example: /disconnect 192.168.1.2:8888'
+    else:
+        print 'Valid commands:\n'
+
+        print '/help - display this information'
+        print '/connect - connect to another user'
+        print '/disconnect - disconnect from a connected user\n'
+
+        print 'For more information about a specific command, use /help <command>'
 
 
 def connect(processes, address):
