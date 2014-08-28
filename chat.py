@@ -19,12 +19,19 @@ processes = []
 
 
 def start_chat(args):
-    topic_name = args[3]
-    topics.append({'name': topic_name, 'type': 'send'})
-    topics.append({'name': topic_name, 'type': 'receive'})
+    if len(args) >= 3 and args[1].isdigit():
+        port = args[1]
+        nickname = args[2]
+    else:
+        print 'Error: You must specify port and nickname.'
+        print 'Example: chat.py 1337 William'
+        return
 
-    port = args[1]
-    nickname = args[2]
+    if len(args) >= 4:
+        topic_name = args[3]
+        topics.append({'name': topic_name, 'type': 'send'})
+        topics.append({'name': topic_name, 'type': 'receive'})
+
     send(port, nickname)
 
 
