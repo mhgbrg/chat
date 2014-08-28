@@ -36,40 +36,58 @@ def send(port, nickname):
     while True:
         msg = raw_input()
 
-        if msg[0] != '/':
+        if msg == '':
+            pass
+        elif msg[0] != '/':
             send_message(socket, msg, nickname)
         else:
             args = msg.split(' ')
+            command = args[0][1:]
 
-            if args[0] == '/exit':
+            if command == 'exit':
                 break
-            elif len(args) == 1:
-                display_help(args[0][1:])
             else:
-                arg1 = args[1]
-                if args[0] == '/connect':
-                    connect(arg1)
+                if command == 'connect':
+                    if len(args) < 1:
+                        display_help(command)
+                    else:
+                        connect(args[1])
 
-                elif args[0] == '/disconnect':
-                    disconnect(arg1)
+                elif command == 'disconnect':
+                    if len(args) < 1:
+                        display_help(command)
+                    else:
+                        disconnect(args[1])
 
-                elif args[0] == '/add_topic':
+                elif command == 'add_topic':
                     if len(args) < 3:
-                        display_help(args[0])
+                        display_help(command)
                     else:
                         add_topic(args[2], args[1])
 
-                elif args[0] == '/remove_topic':
+                elif command == 'remove_topic':
                     if len(args) < 3:
-                        display_help(args[0])
+                        display_help(command)
                     else:
                         remove_topic(args[2], args[1])
 
-                elif args[0] == '/help':
-                    display_help(arg1)
+                elif command == 'list_topics':
+                    list_topics()
+
+                elif command == 'list_receivers':
+                    list_receivers()
+
+                elif command == 'list_processes':
+                    list_processes()
+
+                elif command == 'help':
+                    if len(args) < 2:
+                        display_help()
+                    else:
+                        display_help(args[1])
 
                 else:
-                    display_help('/help')
+                    display_help()
 
 
 def start_process(address, topic_name):
@@ -189,7 +207,45 @@ def receive(address, topic_name):
         print msg
 
 
-def display_help(command):
+def list_topics():
+    sending_topics = []
+    receiving_topics = []
+
+    for topic in topics:
+        if topic['type'] == 'send':
+            sending_topics.append(topic['name'])
+        elif topic['type'] == 'receive':
+            receiving_topics.append(topic['name'])
+
+    if sending_topics:
+        print 'Sending to topics: %s' % ', '.join(sending_topics)
+    else:
+        print 'Not sending to any topics.'
+
+    if receiving_topics:
+        print 'Receiving from topics: %s' % ', '.join(receiving_topics)
+    else:
+        print 'Not receiving from any topics.'
+
+
+def list_receivers():
+    if receivers:
+        print 'Connected to: %s' % ', '.join(receivers)
+    else:
+        print 'Not connected to any receivers.'
+
+
+def list_processes():
+    if processes:
+        pretty_processes = []
+        for process in processes:
+            pretty_processes.append(process['address'] + ' #' + process['topic'])
+        print 'Active processes: %s' % ', '.join(pretty_processes)
+    else:
+        print 'No active processes.'
+
+
+def display_help(command=''):
     if command == 'connect':
         print '/connect - connect to another user\n'
 
@@ -216,6 +272,21 @@ def display_help(command):
         print '/remove_topic <send/receive> <topic>'
         print 'Example: /remove_topic send chalmers'
         print 'Example: /remove_topic receive avancez'
+    elif command == 'list_topics':
+        print '/list_topics - list all current topics\n'
+
+        print 'Usage:'
+        print '/list_topics'
+    elif command == 'list_receivers':
+        print '/list_receivers - list all connected receivers\n'
+
+        print 'Usage:'
+        print '/list_receivers'
+    elif command == 'list_processes':
+        print '/list_processes - list all active processes\n'
+
+        print 'Usage:'
+        print '/list_processes'
     else:
         print 'Valid commands:\n'
 
@@ -223,7 +294,10 @@ def display_help(command):
         print '/connect - connect to another user'
         print '/disconnect - disconnect from a connected user'
         print '/add_topic - add topic'
-        print '/remove_topic - remove topic\n'
+        print '/remove_topic - remove topic'
+        print '/list_topics - list all current topics'
+        print '/list_receivers - list all connected receivers'
+        print '/list_processes - list all active processes\n'
 
         print 'For more information about a specific command, use /help <command>'
 
