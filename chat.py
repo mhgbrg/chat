@@ -6,12 +6,15 @@ import sys
 from multiprocessing import Process
 
 topics = []
+# ex:
 # [{'name': 'chalmers', 'type': 'send'}, {'name': 'chalmers', 'type': 'receive'}]
 
 receivers = []
+# ex:
 # ['localhost:8888', 'localhost:8889', 'localhost:8890']
 
 processes = []
+# ex:
 # [
 #   {'process': <process>, 'address': 'localhost:8888', 'topic': 'chalmers'},
 #   {'process': <process>, 'address': 'localhost:8888', 'topic': 'avancez'}
@@ -55,13 +58,13 @@ def send(port, nickname):
                 break
             else:
                 if command == 'connect':
-                    if len(args) < 1:
+                    if len(args) < 2:
                         display_help(command)
                     else:
                         connect(args[1])
 
                 elif command == 'disconnect':
-                    if len(args) < 1:
+                    if len(args) < 2:
                         display_help(command)
                     else:
                         disconnect(args[1])
